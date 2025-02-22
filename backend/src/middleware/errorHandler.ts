@@ -9,6 +9,11 @@ export const errorHandler = (err: unknown, req: Request, res: Response, next: Ne
     httpCode = err.httpCode
     message = err.message
     console.log(`Error! Error message: ${err.message}`, err)
+    res.status(httpCode).json({
+      message,
+      httpCode,
+    })
+    return
   }
 
   if (err instanceof Error) {
@@ -21,5 +26,5 @@ export const errorHandler = (err: unknown, req: Request, res: Response, next: Ne
   res.status(httpCode).json({
     message,
   })
-  next()
+  return
 }
