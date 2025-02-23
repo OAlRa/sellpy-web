@@ -27,3 +27,8 @@ export class NotAuthorisedError extends AppError {
     super(`Not authorised to get requested content`, 'NotAuthorisedError', 401)
   }
 }
+export class BadRequestError extends AppError {
+  constructor(typeOfInput: string) {
+    super(`${typeOfInput} has the wrong format`, 'BadRequestError', 400)
+  }
+}

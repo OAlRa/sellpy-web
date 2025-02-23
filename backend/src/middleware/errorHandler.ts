@@ -12,6 +12,7 @@ export const errorHandler = (err: unknown, req: Request, res: Response, next: Ne
     res.status(httpCode).json({
       message,
       httpCode,
+      name: err.name,
     })
     return
   }

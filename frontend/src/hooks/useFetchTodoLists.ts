@@ -4,7 +4,7 @@ import { ITodoList } from '../types/types'
 
 const handleFetchTodoLists = async () => {
   try {
-    const { data } = await axios.get<Record<string, ITodoList>>('http://localhost:3001/todos')
+    const { data } = await axios.get<ITodoList[]>('http://localhost:3001/todos')
     return data
   } catch (error) {
     if (error instanceof Error) {

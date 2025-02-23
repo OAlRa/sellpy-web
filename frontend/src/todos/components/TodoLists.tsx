@@ -14,9 +14,8 @@ import { useFetchTodoLists } from '../../hooks/useFetchTodoLists.ts'
 import { ITodoList } from '../../types/types.ts'
 
 export const TodoLists = ({ style }: { style: any }) => {
-  const [activeList, setActiveList] = useState<string>()
-  // TODO
-  const [, setTodoLists] = useState<{}>()
+  const [activeList, setActiveList] = useState<ITodoList>()
+
   const {
     data: todos,
     isLoading: todosIsLoading,
@@ -27,6 +26,7 @@ export const TodoLists = ({ style }: { style: any }) => {
   if (todosIsLoading) return <p>Loading</p>
   if (todosIsError) return <p>Error</p>
   if (todos === undefined) return null
+
   if (!Object.keys(todos).length) return null
   return (
     <Fragment>
@@ -34,30 +34,18 @@ export const TodoLists = ({ style }: { style: any }) => {
         <CardContent>
           <Typography component='h2'>My Todo Lists</Typography>
           <List>
-            {Object.keys(todos).map((key) => (
-              <ListItemButton key={key} onClick={() => setActiveList(key)}>
+            {todos?.map((todo) => (
+              <ListItemButton key={todo.id} onClick={() => setActiveList(todo)}>
                 <ListItemIcon>
                   <ReceiptIcon />
                 </ListItemIcon>
-                <ListItemText primary={todos[key].title} />
+                <ListItemText primary={todo.title} />
               </ListItemButton>
             ))}
           </List>
         </CardContent>
       </Card>
-      {activeList && todos[activeList] && (
-        <TodoListForm
-          key={activeList} // use key to make React recreate component to reset internal state
-          todoList={todos[activeList]}
-          saveTodoList={(id: string, { todos }: ITodoList) => {
-            const listToUpdate: ITodoList = todos[id]
-            setTodoLists({
-              ...todos,
-              [id]: { ...listToUpdate, todos },
-            })
-          }}
-        />
-      )}
+      {activeList && <TodoListForm key={activeList.id} todoList={activeList} />}
     </Fragment>
   )
 }
