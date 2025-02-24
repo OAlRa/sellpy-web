@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
+import { ITodo } from '../types/types'
 
-const handleUpdateTodos = async (id: string, todos: string[]) => {
+const handleUpdateTodos = async (todoListId: string, todos: ITodo[]) => {
   try {
-    const { data } = await axios.put(`http://localhost:3001/todos/${id}`, { todos })
+    const { data } = await axios.put(`http://localhost:3001/todos/${todoListId}`, { todos })
     return data
   } catch (error) {
     if (error instanceof Error) {
@@ -15,11 +16,11 @@ const handleUpdateTodos = async (id: string, todos: string[]) => {
 
 // TODO
 // Consider having Todo be its own entry in DB
-export const useUpdateTodos = (id: string, todos: string[]) => {
+export const useUpdateTodos = (todoListId: string, todos: ITodo[]) => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationKey: ['updateTodos', id],
-    mutationFn: () => handleUpdateTodos(id, todos),
+    mutationKey: ['updateTodos', todoListId],
+    mutationFn: () => handleUpdateTodos(todoListId, todos),
     onSuccess: () => {
       queryClient.invalidateQueries({
         // TODO

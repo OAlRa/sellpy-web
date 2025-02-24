@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { TextField, Card, CardContent, CardActions, Button, Typography } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
@@ -79,6 +79,7 @@ export const TodoListForm = ({ todoList }) => {
             <Button
               type='button'
               color='primary'
+              disabled={isPending}
               // immutable update
               onClick={() => {
                 setTodos([...todos, ''])

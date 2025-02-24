@@ -1,43 +1,75 @@
 import { todoLists } from '../db/db.ts'
 import { BadRequestError, NotFoundError } from '../errors/customErrors.ts'
-import type { ITodoListDTO } from '../types/DTOs.ts'
+import type { ITodoDTO, ITodoListDTO } from '../types/DTOs.ts'
 import type { Request, Response, NextFunction } from 'express'
+import type { IRequestTodo } from '../types/request.ts'
+import { v4 as uuidv4 } from 'uuid'
 
-export const getTodos = (req: Request, res: Response<ITodoListDTO[]>, next: NextFunction) => {
+export const getTodoLists = (req: Request, res: Response<ITodoListDTO[]>, next: NextFunction) => {
   try {
-    const todos = todoLists
-    console.log(todos, 'todos')
-    res.status(200).json(todos)
+    res.status(200).json(todoLists)
   } catch (error) {
     next(error)
   }
 }
 
 export const addTodosToTodoListByTodoListId = (
-  req: Request<{ id: string }, {}, { todos: string[] }>,
+  req: Request<{ todoListId: string }, {}, { todos: IRequestTodo[] }>,
   res: Response<ITodoListDTO>,
   next: NextFunction
 ) => {
   try {
     // TODO
     // Validate input
-    const { id } = req.params || {}
+    const { todoListId } = req.params || {}
     const { todos } = req.body || {}
-    if (!id) throw new BadRequestError('id')
+    if (!todoListId) throw new BadRequestError('todoListId')
     if (!todos) throw new BadRequestError(`Body object: with structure ${todos} todo`)
 
-    const findTodoList = todoLists.find((todoList) => todoList.id === id)
-    if (!findTodoList) throw new NotFoundError(`Todo list with id ${id}`)
+    const findTodoList = todoLists.find((todoList) => todoList.id === todoListId)
+    if (!findTodoList) throw new NotFoundError(`Todo list with id ${todoListId}`)
 
-    // Should push just the new ones
+    const isExistingTodo = (todo: IRequestTodo) => {
+      if (!todo.id) return false
+      if (!findTodoList.todos.find((dbTodo) => dbTodo.id === todo.id)) return false
+      return true
+    }
+
+    const handleUpdateTodo = (todo: IRequestTodo): ITodoDTO => {
+      const todoToUpdate = findTodoList.todos.find((dbTodo) => dbTodo.id === todo.id)
+      return {
+        ...todoToUpdate,
+        done: todo.done,
+        listId: todo.listId,
+        title: todo.title,
+      }
+    }
+
+    const handleNewTodo = (todo: IRequestTodo): ITodoDTO => {
+      return {
+        id: uuidv4(),
+        title: todo.title,
+        done: false,
+        listId: findTodoList.id,
+        createdAt: new Date(),
+      }
+    }
+
+    const updatedTodos: ITodoDTO[] = todos.map((todo) => {
+      if (isExistingTodo(todo)) {
+        return handleUpdateTodo(todo)
+      }
+      return handleNewTodo(todo)
+    })
 
     // TODO
-    // todos.forEach((todo) => {
-    //   findTodoList.todos.push(todo)
-    // })
-
-    // Can update the whole list as a first iteration
-    findTodoList.todos = todos
+    // Maybe its own hook instead
+    findTodoList.todos = updatedTodos
+    if (findTodoList.todos.every((t) => !!t.done)) {
+      findTodoList.allDone = true
+    } else {
+      findTodoList.allDone = false
+    }
 
     res.status(201).json(findTodoList)
   } catch (error) {
