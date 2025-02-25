@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { TextField, Card, CardContent, CardActions, Button, Typography } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
@@ -6,9 +6,12 @@ import DoneIcon from '@mui/icons-material/Done'
 import { useUpdateTodos } from '../../hooks/useUpdateTodos.ts'
 import { ITodo, ITodoList } from '../../types/types.ts'
 
+import { ErrorBoundary, useErrorBoundary } from 'react-error-boundary'
+
 export const TodoListForm = ({ todoList }: { todoList: ITodoList }) => {
   const [todos, setTodos] = useState<ITodo[]>(todoList.todos)
   const { mutate, isPending } = useUpdateTodos(todoList.id, todos)
+  const { showBoundary } = useErrorBoundary()
 
   const handleSubmit = (event) => {
     event.preventDefault()

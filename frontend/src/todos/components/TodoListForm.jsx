@@ -13,21 +13,6 @@ export const TodoListForm = ({ todoList }) => {
     mutate()
   }
 
-  // Figure out to update the todos
-  // Probably a good idea to copy the whole list and update it with the response.
-  // Or add to it and fetch again with a query specific for that todoList.
-
-  // Add just the items that we want to db
-  // Make a new TodoDTO and give it ids when they're created and a createdAt to sort them.
-
-  // jag vill endast lägga till de todos som har tillkommit.
-
-  // if the lowest index of the added todos is equal or greater than the todos.length
-  //
-  // const checkNewTodos = (todos: string[]) => {
-  //   if(todos.length === )
-  // }
-
   return (
     <Card sx={{ margin: '0 1rem' }}>
       <CardContent>
@@ -48,11 +33,6 @@ export const TodoListForm = ({ todoList }) => {
                 onChange={(event) => {
                   setTodos([
                     // immutable update
-                    // I only want to add the todos that have a
-                    // higher index than the current length of todos
-                    // This is why it's working on the fe
-                    // Updating the value of the todos on the index we are currently on
-                    // when mapping through the todos
                     ...todos.slice(0, index),
                     event.target.value,
                     ...todos.slice(index + 1),

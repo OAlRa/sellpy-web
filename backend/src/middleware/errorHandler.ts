@@ -8,24 +8,24 @@ export const errorHandler = (err: unknown, req: Request, res: Response, next: Ne
   if (err instanceof AppError) {
     httpCode = err.httpCode
     message = err.message
-    console.log(`Error! Error message: ${err.message}`, err)
+
     res.status(httpCode).json({
       message,
       httpCode,
       name: err.name,
     })
+    if (httpCode >= 400 && httpCode < 500) {
+      req.log.warn(err, `${err.name} - Message: ${err.message}`)
+    }
     return
   }
 
   if (err instanceof Error) {
-    console.log(`Error! Error message: ${err.message}`, err)
+    message = err.message
   }
 
-  // TODO
-  // Use logger
-
+  req.log.error(err, message)
   res.status(httpCode).json({
     message,
   })
-  return
 }

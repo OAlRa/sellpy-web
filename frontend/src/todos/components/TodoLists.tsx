@@ -13,6 +13,7 @@ import DoneAllIcon from '@mui/icons-material/DoneAll'
 import { TodoListForm } from './TodoListForm.tsx'
 import { useFetchTodoLists } from '../../hooks/useFetchTodoLists.ts'
 import { ITodoList } from '../../types/types.ts'
+import AppErrorBoundary from '../../AppErrorBoundary.tsx'
 
 export const TodoLists = ({ style }: { style: any }) => {
   // TODO
@@ -40,19 +41,23 @@ export const TodoLists = ({ style }: { style: any }) => {
       <Card style={style}>
         <CardContent>
           <Typography component='h2'>My Todo Lists</Typography>
-          <List>
-            {todoLists?.map((todoList) => (
-              <ListItemButton key={todoList.id} onClick={() => setActiveList(todoList)}>
-                <ListItemIcon>
-                  {todoList.allDone ? <DoneAllIcon color='success' /> : <ReceiptIcon />}
-                </ListItemIcon>
-                <ListItemText primary={todoList.title} />
-              </ListItemButton>
-            ))}
-          </List>
+          <AppErrorBoundary>
+            <List>
+              {todoLists?.map((todoList) => (
+                <ListItemButton key={todoList.id} onClick={() => setActiveList(todoList)}>
+                  <ListItemIcon>
+                    {todoList.allDone ? <DoneAllIcon color='success' /> : <ReceiptIcon />}
+                  </ListItemIcon>
+                  <ListItemText primary={todoList.title} />
+                </ListItemButton>
+              ))}
+            </List>
+          </AppErrorBoundary>
         </CardContent>
       </Card>
-      {activeList && <TodoListForm key={activeList.id} todoList={activeList} />}
+      <AppErrorBoundary>
+        {activeList && <TodoListForm key={activeList.id} todoList={activeList} />}
+      </AppErrorBoundary>
     </Fragment>
   )
 }
