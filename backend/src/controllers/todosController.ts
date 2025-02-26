@@ -19,8 +19,6 @@ export const addTodosToTodoListByTodoListId = (
   next: NextFunction
 ) => {
   try {
-    // TODO
-    // Validate input
     const { todoListId } = req.params || {}
     const { todos } = req.body || {}
     if (!todoListId) throw new BadRequestError('todoListId')
@@ -49,7 +47,7 @@ export const addTodosToTodoListByTodoListId = (
       return {
         id: uuidv4(),
         title: todo.title,
-        done: false,
+        done: todo.done,
         listId: findTodoList.id,
         createdAt: new Date(),
       }
@@ -62,9 +60,7 @@ export const addTodosToTodoListByTodoListId = (
       return handleNewTodo(todo)
     })
 
-    // TODO
-    // Maybe its own hook instead
-    findTodoList.todos = updatedTodos
+    findTodoList.todos = [...updatedTodos]
     if (findTodoList.todos.every((t) => !!t.done)) {
       findTodoList.allDone = true
     } else {
