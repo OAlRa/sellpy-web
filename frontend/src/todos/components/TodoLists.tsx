@@ -9,15 +9,12 @@ import {
   Typography,
 } from '@mui/material'
 import ReceiptIcon from '@mui/icons-material/Receipt'
-import DoneAllIcon from '@mui/icons-material/DoneAll'
 import { TodoListForm } from './TodoListForm.tsx'
 import { useFetchTodoLists } from '../../hooks/useFetchTodoLists.ts'
 import { ITodoList } from '../../types/types.ts'
 import AppErrorBoundary from '../../AppErrorBoundary.tsx'
 
 export const TodoLists = ({ style }: { style: any }) => {
-  // TODO
-  // Maybe only set the id of the active list in the state and fetch the contents in the TodoListForm
   const [activeList, setActiveList] = useState<ITodoList>()
 
   const {
@@ -46,7 +43,7 @@ export const TodoLists = ({ style }: { style: any }) => {
               {todoLists?.map((todoList) => (
                 <ListItemButton key={todoList.id} onClick={() => setActiveList(todoList)}>
                   <ListItemIcon>
-                    {todoList.allDone ? <DoneAllIcon color='success' /> : <ReceiptIcon />}
+                    <ReceiptIcon />
                   </ListItemIcon>
                   <ListItemText primary={todoList.title} />
                 </ListItemButton>
@@ -56,7 +53,7 @@ export const TodoLists = ({ style }: { style: any }) => {
         </CardContent>
       </Card>
       <AppErrorBoundary>
-        {activeList && <TodoListForm key={activeList.id} todoList={activeList} />}
+        {activeList && <TodoListForm key={activeList.id} todoListId={activeList.id} />}
       </AppErrorBoundary>
     </Fragment>
   )

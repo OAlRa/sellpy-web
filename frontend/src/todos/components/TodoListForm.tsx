@@ -1,26 +1,95 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+
 import { TextField, Card, CardContent, CardActions, Button, Typography } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
 import DoneIcon from '@mui/icons-material/Done'
-import { useUpdateTodos } from '../../hooks/useUpdateTodos.ts'
-import { ITodo, ITodoList } from '../../types/types.ts'
 
-import { ErrorBoundary, useErrorBoundary } from 'react-error-boundary'
+import { ITodo } from '../../types/types.ts'
 
-export const TodoListForm = ({ todoList }: { todoList: ITodoList }) => {
-  const [todos, setTodos] = useState<ITodo[]>(todoList.todos)
-  const { mutate, isPending } = useUpdateTodos(todoList.id, todos)
-  const { showBoundary } = useErrorBoundary()
+import { useAddTodos } from '../../hooks/useAddTodos.ts'
+import { useFetchTodoListById } from '../../hooks/useFetchTodoListById.ts'
+import { useDeleteTodo } from '../../hooks/useDeleteTodo.ts'
+import { useUpdateTodoDoneState } from '../../hooks/useUpdateTodoDoneState.ts'
 
-  const handleSubmit = (event) => {
+export const TodoListForm = ({ todoListId }: { todoListId: string }) => {
+  const { data: todoList, isLoading, isError, error } = useFetchTodoListById(todoListId)
+
+  const [todos, setTodos] = useState<ITodo[]>(todoList?.todos || [])
+
+  useEffect(() => {
+    if (todoList) {
+      setTodos(todoList.todos)
+    }
+  }, [todoList])
+
+  const { mutate: addTodosMutate, isPending: addTodosIsPending } = useAddTodos(todoList?.id, todos)
+  const { mutate: deleteTodoMutate, isPending: deleteTodoIsPending } = useDeleteTodo(todoList?.id)
+  const { mutate: updateTodoMutate, isPending: updateTodoIsPending } = useUpdateTodoDoneState(
+    todoList?.id
+  )
+
+  const allDone = useMemo(() => todos?.every((todo) => todo.done), [todos])
+
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
-    mutate()
+    addTodosMutate()
   }
+
+  const handleDelete = (todoId: string, index: number) => {
+    if (!todoId) {
+      setTodos((prevTodos) => [...prevTodos.slice(0, index), ...prevTodos.slice(index + 1)])
+      return
+    }
+    deleteTodoMutate(todoId, {
+      onSuccess: () => {
+        setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== todoId))
+      },
+      onError: (error) => {
+        console.log(`Error deleting the todo. Message: ${error.message}`)
+        // Toast Error
+      },
+    })
+  }
+
+  const toggleTodoState = (todos: ITodo[], index: number): ITodo[] => {
+    const todoToUpdate = todos[index]
+    return [
+      ...todos.slice(0, index),
+      { ...todoToUpdate, done: !todoToUpdate.done },
+      ...todos.slice(index + 1),
+    ]
+  }
+
+  const handleUpdateTodoDoneState = (todoId: string, index: number) => {
+    if (!todoId) {
+      setTodos((prevTodos) => toggleTodoState(prevTodos, index))
+    } else {
+      updateTodoMutate(todoId, {
+        onSuccess: () => {
+          setTodos((prevTodos) => toggleTodoState(prevTodos, index))
+        },
+        onError: () => {
+          console.log('Something went wrong when updating the todo')
+          // Toast Error
+        },
+      })
+    }
+  }
+
+  if (isLoading) return <p>Loading...</p>
+  if (isError) return <p>Error: {error.message}</p>
 
   return (
     <Card sx={{ margin: '0 1rem' }}>
       <CardContent>
+        {allDone ? (
+          <Typography sx={{ margin: '1rem 0' }} variant='h6'>
+            All done! ✅ 👏
+          </Typography>
+        ) : (
+          ''
+        )}
         <Typography component='h2'>{todoList.title}</Typography>
         <form
           onSubmit={handleSubmit}
@@ -52,15 +121,10 @@ export const TodoListForm = ({ todoList }: { todoList: ITodoList }) => {
                 />
                 <Button
                   size='small'
+                  disabled={updateTodoIsPending}
                   color={todo.done ? 'success' : 'inherit'}
                   sx={{ margin: '8px' }}
-                  onClick={() => {
-                    setTodos([
-                      ...todos.slice(0, index),
-                      { ...todo, done: !todo.done },
-                      ...todos.slice(index + 1),
-                    ])
-                  }}
+                  onClick={() => handleUpdateTodoDoneState(todo.id, index)}
                 >
                   <DoneIcon />
                 </Button>
@@ -68,13 +132,8 @@ export const TodoListForm = ({ todoList }: { todoList: ITodoList }) => {
                   sx={{ margin: '8px' }}
                   size='small'
                   color='secondary'
-                  onClick={() => {
-                    setTodos([
-                      // immutable delete
-                      ...todos.slice(0, index),
-                      ...todos.slice(index + 1),
-                    ])
-                  }}
+                  disabled={deleteTodoIsPending}
+                  onClick={() => handleDelete(todo.id, index)}
                 >
                   <DeleteIcon />
                 </Button>
@@ -85,7 +144,7 @@ export const TodoListForm = ({ todoList }: { todoList: ITodoList }) => {
             <Button
               type='button'
               color='primary'
-              disabled={isPending}
+              disabled={addTodosIsPending}
               // immutable update
               onClick={() => {
                 setTodos([...todos, { done: false, listId: todoList.id, title: '' }])
