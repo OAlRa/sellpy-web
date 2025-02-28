@@ -1,12 +1,12 @@
-import { todoLists } from '../db/db.ts'
-import { BadRequestError, NotFoundError } from '../errors/customErrors.ts'
-import { validateParams } from '../utils/utils.ts'
+import { todoLists } from '../db/db.js'
+import { BadRequestError, NotFoundError } from '../errors/customErrors.js'
+import { validateParams } from '../utils/utils.js'
 import {
   findTodoList,
   handleNewTodo,
   handleUpdateTodo,
   isExistingTodo,
-} from '../services/todosService.ts'
+} from '../services/todosService.js'
 
 export const getTodoLists = (req, res, next) => {
   try {

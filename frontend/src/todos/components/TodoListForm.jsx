@@ -5,17 +5,15 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
 import DoneIcon from '@mui/icons-material/Done'
 
-import { ITodo } from '../../types/types.ts'
+import { useAddTodos } from '../../hooks/useAddTodos.js'
+import { useFetchTodoListById } from '../../hooks/useFetchTodoListById.js'
+import { useDeleteTodo } from '../../hooks/useDeleteTodo.js'
+import { useUpdateTodoDoneState } from '../../hooks/useUpdateTodoDoneState.js'
 
-import { useAddTodos } from '../../hooks/useAddTodos.ts'
-import { useFetchTodoListById } from '../../hooks/useFetchTodoListById.ts'
-import { useDeleteTodo } from '../../hooks/useDeleteTodo.ts'
-import { useUpdateTodoDoneState } from '../../hooks/useUpdateTodoDoneState.ts'
-
-export const TodoListForm = ({ todoListId }: { todoListId: string }) => {
+export const TodoListForm = ({ todoListId }) => {
   const { data: todoList, isLoading, isError, error } = useFetchTodoListById(todoListId)
 
-  const [todos, setTodos] = useState<ITodo[]>(todoList?.todos || [])
+  const [todos, setTodos] = useState(todoList?.todos || [])
 
   useEffect(() => {
     if (todoList) {
@@ -31,12 +29,12 @@ export const TodoListForm = ({ todoListId }: { todoListId: string }) => {
 
   const allDone = useMemo(() => todos?.every((todo) => todo.done), [todos])
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = (event) => {
     event.preventDefault()
     addTodosMutate()
   }
 
-  const handleDelete = (todoId: string, index: number) => {
+  const handleDelete = (todoId, index) => {
     if (!todoId) {
       setTodos((prevTodos) => [...prevTodos.slice(0, index), ...prevTodos.slice(index + 1)])
       return
@@ -52,7 +50,7 @@ export const TodoListForm = ({ todoListId }: { todoListId: string }) => {
     })
   }
 
-  const toggleTodoState = (todos: ITodo[], index: number): ITodo[] => {
+  const toggleTodoState = (todos, index) => {
     const todoToUpdate = todos[index]
     return [
       ...todos.slice(0, index),
@@ -61,7 +59,7 @@ export const TodoListForm = ({ todoListId }: { todoListId: string }) => {
     ]
   }
 
-  const handleUpdateTodoDoneState = (todoId: string, index: number) => {
+  const handleUpdateTodoDoneState = (todoId, index) => {
     if (!todoId) {
       setTodos((prevTodos) => toggleTodoState(prevTodos, index))
     } else {

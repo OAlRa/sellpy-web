@@ -2,8 +2,8 @@
   "type": "module",
   "scripts": {
     "lint": "eslint --ext .js src",
-    "start": "node --watch src/index.ts",
-    "dev": "node --watch src/index.ts | pino-pretty -C"
+    "start": "node --watch src/index.js",
+    "dev": "node --watch src/index.js | pino-pretty -C"
   },
   "dependencies": {
     "@types/cors": "^2.8.17",

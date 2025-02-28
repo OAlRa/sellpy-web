@@ -1,6 +1,12 @@
 # Sellpy web interview
 
 Welcome to Sellpy's web interview repo!
+
+## Javascript/Typescript
+
+The `main` branch is written is typescript.
+There is a `js` branch with the project witten is javascript!
+
 ## Prerequisites
 
 NodeJS - if you don't already have it installed, check out [nvm](https://github.com/nvm-sh/nvm).

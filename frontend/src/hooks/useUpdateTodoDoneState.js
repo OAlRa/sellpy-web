@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 
-export const useUpdateTodoDoneState = (todoListId: string) => {
+export const useUpdateTodoDoneState = (todoListId) => {
   return useMutation({
     mutationKey: ['updateTodo', todoListId],
-    mutationFn: async (todoId: string) => {
+    mutationFn: async (todoId) => {
       try {
         await axios.put(`http://localhost:3001/todos/${todoListId}/${todoId}`)
       } catch (error) {

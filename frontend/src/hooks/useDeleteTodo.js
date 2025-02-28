@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 
-export const useDeleteTodo = (todoListId: string) => {
+export const useDeleteTodo = (todoListId) => {
   return useMutation({
     mutationKey: ['deleteTodo', todoListId],
-    mutationFn: async (todoId: string) => {
+    mutationFn: async (todoId) => {
       try {
         await axios.delete(`http://localhost:3001/todos/${todoListId}/${todoId}`)
       } catch (error) {

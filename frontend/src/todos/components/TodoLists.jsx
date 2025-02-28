@@ -9,13 +9,12 @@ import {
   Typography,
 } from '@mui/material'
 import ReceiptIcon from '@mui/icons-material/Receipt'
-import { TodoListForm } from './TodoListForm.tsx'
-import { useFetchTodoLists } from '../../hooks/useFetchTodoLists.ts'
-import { ITodoList } from '../../types/types.ts'
-import AppErrorBoundary from '../../AppErrorBoundary.tsx'
+import { TodoListForm } from './TodoListForm.jsx'
+import { useFetchTodoLists } from '../../hooks/useFetchTodoLists.js'
+import AppErrorBoundary from '../../AppErrorBoundary.jsx'
 
-export const TodoLists = ({ style }: { style: any }) => {
-  const [activeList, setActiveList] = useState<ITodoList>()
+export const TodoLists = ({ style }) => {
+  const [activeList, setActiveList] = useState()
 
   const {
     data: todoLists,
