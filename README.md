@@ -6,6 +6,7 @@ Welcome to Sellpy's web interview repo!
 
 The `main` branch is written is typescript.
 There is a `js` branch with the project witten is javascript!
+`nvm use` is going to activate 23.6.0 when in the main branch to be able to run typescript in node.
 
 ## Prerequisites
 
