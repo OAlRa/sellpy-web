@@ -5,7 +5,7 @@ import {
   getTodoListById,
   getTodoLists,
   updateTodoDoneState,
-} from '../controllers/todosController.ts'
+} from '../controllers/todosController.js'
 
 export const todosRouter = Router()
 

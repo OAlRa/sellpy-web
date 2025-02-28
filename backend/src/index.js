@@ -4,12 +4,12 @@ import cors from 'cors'
 import helmet from 'helmet'
 
 // Routers
-import { todosRouter } from './routers/todosRouter.ts'
+import { todosRouter } from './routers/todosRouter.js'
 
 // Middleware
-import { errorHandler } from './middleware/errorHandler.ts'
-import customLogger from './middleware/logger.ts'
-import { notFound } from './middleware/notFound.ts'
+import { errorHandler } from './middleware/errorHandler.js'
+import customLogger from './middleware/logger.js'
+import { notFound } from './middleware/notFound.js'
 
 const PORT = 3001
 

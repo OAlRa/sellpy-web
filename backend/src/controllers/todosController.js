@@ -1,8 +1,5 @@
 import { todoLists } from '../db/db.ts'
 import { BadRequestError, NotFoundError } from '../errors/customErrors.ts'
-import type { ITodoDTO, ITodoListDTO } from '../types/DTOs.ts'
-import type { Request, Response, NextFunction } from 'express'
-import type { IRequestTodo } from '../types/request.ts'
 import { validateParams } from '../utils/utils.ts'
 import {
   findTodoList,
@@ -11,7 +8,7 @@ import {
   isExistingTodo,
 } from '../services/todosService.ts'
 
-export const getTodoLists = (req: Request, res: Response<ITodoListDTO[]>, next: NextFunction) => {
+export const getTodoLists = (req, res, next) => {
   try {
     res.status(200).json(todoLists)
   } catch (error) {
@@ -19,7 +16,7 @@ export const getTodoLists = (req: Request, res: Response<ITodoListDTO[]>, next: 
   }
 }
 
-export const updateTodoDoneState = (req: Request, res: Response, next: NextFunction) => {
+export const updateTodoDoneState = (req, res, next) => {
   try {
     const { todoListId, todoId } = req.params || {}
     validateParams([todoListId, todoId])
@@ -35,7 +32,7 @@ export const updateTodoDoneState = (req: Request, res: Response, next: NextFunct
   }
 }
 
-export const getTodoListById = (req: Request, res: Response, next: NextFunction) => {
+export const getTodoListById = (req, res, next) => {
   try {
     const { todoListId } = req.params || {}
     validateParams([todoListId])
@@ -47,7 +44,7 @@ export const getTodoListById = (req: Request, res: Response, next: NextFunction)
   }
 }
 
-export const deleteTodo = (req: Request, res: Response, next: NextFunction) => {
+export const deleteTodo = (req, res, next) => {
   try {
     const { todoListId, todoId } = req.params || {}
     validateParams([todoListId, todoId])
@@ -61,11 +58,7 @@ export const deleteTodo = (req: Request, res: Response, next: NextFunction) => {
   }
 }
 
-export const addTodos = (
-  req: Request<{ todoListId: string }, {}, { todos: IRequestTodo[] }>,
-  res: Response<ITodoListDTO>,
-  next: NextFunction
-) => {
+export const addTodos = (req, res, next) => {
   try {
     const { todoListId } = req.params || {}
     validateParams([todoListId])
@@ -74,7 +67,7 @@ export const addTodos = (
 
     const todoList = findTodoList(todoListId)
 
-    const updatedTodos: ITodoDTO[] = todos.map((todo) => {
+    const updatedTodos = todos.map((todo) => {
       if (isExistingTodo(todo, todoList)) {
         return handleUpdateTodo(todo, todoList)
       }

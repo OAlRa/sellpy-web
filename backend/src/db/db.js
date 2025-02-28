@@ -1,6 +1,4 @@
-import type { ITodoListDTO } from '../types/DTOs.ts'
-
-export const todoLists: ITodoListDTO[] = [
+export const todoLists = [
   {
     id: '0000000001',
     title: 'First List',

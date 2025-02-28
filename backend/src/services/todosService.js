@@ -1,10 +1,8 @@
 import { v4 as uuidv4 } from 'uuid'
-import { todoLists } from '../db/db.ts'
-import { NotFoundError } from '../errors/customErrors.ts'
-import type { IRequestTodo } from '../types/request.ts'
-import type { ITodoDTO, ITodoListDTO } from '../types/DTOs.ts'
+import { todoLists } from '../db/db.js'
+import { NotFoundError } from '../errors/customErrors.js'
 
-export const findTodoList = (todoListId: string): ITodoListDTO => {
+export const findTodoList = (todoListId) => {
   const findTodoList = todoLists.find((list) => list.id === todoListId)
   if (!findTodoList) {
     throw new NotFoundError(`Todolist with id ${todoListId}`)
@@ -12,13 +10,13 @@ export const findTodoList = (todoListId: string): ITodoListDTO => {
   return findTodoList
 }
 
-export const isExistingTodo = (todo: IRequestTodo, todoList: ITodoListDTO): boolean => {
+export const isExistingTodo = (todo, todoList) => {
   if (!todo.id) return false
   if (!todoList.todos.find((dbTodo) => dbTodo.id === todo.id)) return false
   return true
 }
 
-export const handleUpdateTodo = (todo: IRequestTodo, todoList: ITodoListDTO): ITodoDTO => {
+export const handleUpdateTodo = (todo, todoList) => {
   const todoToUpdate = todoList.todos.find((dbTodo) => dbTodo.id === todo.id)
   return {
     ...todoToUpdate,
@@ -28,7 +26,7 @@ export const handleUpdateTodo = (todo: IRequestTodo, todoList: ITodoListDTO): IT
   }
 }
 
-export const handleNewTodo = (todo: IRequestTodo, todoList: ITodoListDTO): ITodoDTO => {
+export const handleNewTodo = (todo, todoList) => {
   return {
     id: uuidv4(),
     title: todo.title,

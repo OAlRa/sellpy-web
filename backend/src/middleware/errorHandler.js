@@ -1,7 +1,7 @@
-import { AppError } from '../errors/customErrors.ts'
-import type { NextFunction, Request, Response } from 'express'
+import { AppError } from '../errors/customErrors.js'
 
-export const errorHandler = (err: unknown, req: Request, res: Response, next: NextFunction) => {
+/* eslint-disable-next-line no-unused-vars */
+export const errorHandler = (err, req, res, next) => {
   let message = 'Oops, something went wrong'
   let httpCode = 500
 
